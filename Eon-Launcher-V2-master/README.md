@@ -12,5 +12,5 @@
 
 ---
 
-* **Original:** [@EonOGFN]((https://github.com/EonOGFN))
+* **Original:** [@EonOGFN](https://github.com)
 * **Remake:** [@asynnc2](https://github.com)
