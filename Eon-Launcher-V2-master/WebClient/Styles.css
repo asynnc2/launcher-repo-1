@@ -5669,13 +5669,7 @@ html:not([data-liquid-glass]) .logout-modal-backdrop {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Baseline frame tint (every rank) tied to the current accent theme, so the
-   frame always visibly reflects whatever theme is picked in Settings instead
-   of staying a fixed neutral gray. Also bumps opacity a bit over the
-   original .logout-modal values, since at .58/.72 alpha the blurred page
-   behind the modal was bleeding its own colour through and fighting with
-   whatever tint was applied here - this keeps the frame's colour consistent
-   regardless of what's rendered behind it. */
+
 html[data-liquid-glass] .player-detail-modal {
   background: color-mix(in srgb, var(--accent) 12%, rgba(35, 35, 40, .86)) !important;
   border: none !important;
@@ -5691,12 +5685,7 @@ html:not([data-liquid-glass]) .player-detail-modal {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Rank-tinted frame for the player detail modal (#1-3 only), overriding both
-   the theme rules above and the liquid-glass rules further up. Same
-   specificity pattern (html[...] + two classes beats html[...] + one class)
-   so this wins in both glass states, and every blur/shadow/backdrop-filter
-   value is carried over unchanged - only the colour shifts to
-   gold/silver/bronze via --rank. */
+
 html[data-liquid-glass] .player-detail-modal.top {
   background: color-mix(in srgb, var(--rank) 26%, rgba(35, 35, 40, .58)) !important;
   border: none !important;

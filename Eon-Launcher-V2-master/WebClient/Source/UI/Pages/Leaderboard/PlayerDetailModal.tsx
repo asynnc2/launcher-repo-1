@@ -10,7 +10,7 @@ interface PlayerDetailModalProps {
   OnClose: () => void;
 }
 
-// Simple original crown glyph - purely decorative, no external asset.
+// Crown icon slightly tiled gotta fix that
 function CrownIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -20,9 +20,7 @@ function CrownIcon({ className }: { className?: string }) {
   );
 }
 
-// Fields already shown elsewhere in this modal (avatar/name/level header, or
-// the three known stat tiles) or that are pure bookkeeping - never listed
-// again in the "Other stats" section below.
+//Stats displayed for player acc
 const KnownKeys = new Set(["Username", "Level", "AthenaCharacter", "Rank", "Kills", "Victory", "Points"]);
 
 function FormatLabel(Key: string): string {

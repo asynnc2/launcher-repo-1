@@ -8,20 +8,14 @@ export type CosmeticKind = "skin" | "emote" | "other";
 interface CosmeticViewerProps {
   Kind: CosmeticKind;
   RarityColor?: string;
-  /**
-   * Optional path/URL to a real .glb/.gltf model. If provided, this loads and
-   * displays that model instead of the placeholder mannequin below. Leave
-   * unset to fall back to the stylized placeholder - this project doesn't
-   * ship any real cosmetic 3D assets, so nothing loads here unless a caller
-   * supplies one of their own.
-   */
+   //Optional path/URL to a real .glb/.gltf model. If provided, this loads and
+   //displays that model instead of the placeholder mannequin below. Leave
+   //unset to fall back to the stylized placeholder - this project doesn't
+   //ship any real cosmetic 3D assets, so nothing loads here unless a caller
+   // supplies one of their own.
+   
   ModelUrl?: string;
 }
-
-// --- Placeholder mannequin -------------------------------------------------
-// A simple stylized humanoid built from primitives, matching the white-
-// silhouette look already used elsewhere in the shop for items without full
-// art. Stands in until/unless a real model is supplied via ModelUrl.
 
 function Mannequin({ Kind, Color }: { Kind: CosmeticKind; Color: string }) {
   const GroupRef = useRef<THREE.Group>(null);
@@ -35,8 +29,6 @@ function Mannequin({ Kind, Color }: { Kind: CosmeticKind; Color: string }) {
     const T = State.clock.getElapsedTime();
 
     if (Kind === "emote") {
-      // Small procedural "dance" bounce - not a real emote animation, just a
-      // placeholder so the emote category doesn't look identical to a skin.
       GroupRef.current.position.y = Math.sin(T * 4) * 0.06;
       GroupRef.current.rotation.y = Math.sin(T * 1.5) * 0.25;
     } else {
@@ -76,14 +68,12 @@ function Mannequin({ Kind, Color }: { Kind: CosmeticKind; Color: string }) {
   );
 }
 
-// --- Real model loader (used only when ModelUrl is supplied) --------------
+//Real model loader (used only when ModelUrl is supplied) 
 
 function LoadedModel({ Url }: { Url: string }) {
   const { scene } = useGLTF(Url);
   return <primitive object={scene} position={[0, -1, 0]} />;
 }
-
-// --- Scene wrapper ----------------------------------------------------------
 
 function Scene({ Kind, RarityColor, ModelUrl }: CosmeticViewerProps) {
   return (

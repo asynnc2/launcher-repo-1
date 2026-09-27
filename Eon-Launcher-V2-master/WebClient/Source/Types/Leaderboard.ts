@@ -6,10 +6,7 @@ export interface LeaderEntry {
   Points: number;
   AthenaCharacter?: { CosmeticId: string };
   Rank?: number;
-  // The backend may return additional fields beyond the ones above that the
-  // UI doesn't explicitly know about yet - this keeps them typed as
-  // `unknown` (rather than dropped) so PlayerDetailModal can surface
-  // whatever actually comes back at runtime.
+ //checks and requests for additional stats
   [Key: string]: unknown;
 }
 
