@@ -410,6 +410,8 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   align-items: center;
   gap: 16px;
 }
+.player-detail-title { flex: 1 1 auto; min-width: 0; }
+.player-detail-avatar-wrap { position: relative; flex-shrink: 0; }
 .player-detail-avatar {
   width: 64px;
   height: 64px;
@@ -430,6 +432,103 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 .player-detail-header h2 { margin: 0; font-size: 20px; }
 .player-detail-sub { color: var(--text-muted); font-size: 13px; }
 
+/* Top-3 avatar ring, keyed off --rank (set inline from RankAccent). */
+.player-detail-avatar-wrap.top .player-detail-avatar,
+.player-detail-avatar-wrap.top .player-detail-avatar-fallback {
+  border-color: var(--rank);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--rank) 35%, transparent),
+    0 0 16px color-mix(in srgb, var(--rank) 55%, transparent);
+}
+
+/* Glowing crown for rank #1-3, floating above the avatar. */
+.player-detail-crown {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  transform: translateX(-50%) rotate(-6deg);
+  color: var(--rank);
+  z-index: 1;
+  animation: player-detail-crown-glow 2.2s ease-in-out infinite;
+}
+@keyframes player-detail-crown-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px var(--rank)) drop-shadow(0 0 7px color-mix(in srgb, var(--rank) 65%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 7px var(--rank)) drop-shadow(0 0 15px color-mix(in srgb, var(--rank) 85%, transparent));
+  }
+}
+
+/* Rank medal, top-right of the header. Every entry with a Rank gets one;
+   rank 1-3 get the glowing accent colour, everything else stays on-theme. */
+.player-detail-medal {
+  flex-shrink: 0;
+  align-self: center; /* vertically centered against the row now that it's the taller element */
+  min-width: 84px;
+  height: 84px;
+  padding: 0 14px;
+  margin-right: 22px; /* nudges it left of the edge so it centers over the Hype tile */
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text-strong);
+  background: var(--surface-soft);
+  border: 2px solid var(--border);
+}
+.player-detail-medal.top {
+  color: #201a0a;
+  background: radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--rank) 88%, white), var(--rank));
+  border-color: color-mix(in srgb, var(--rank) 70%, white);
+  animation: player-detail-medal-glow 2.2s ease-in-out infinite;
+}
+@keyframes player-detail-medal-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--rank) 25%, transparent),
+      0 0 10px color-mix(in srgb, var(--rank) 50%, transparent),
+      inset 0 1px 2px rgba(255, 255, 255, .6);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--rank) 40%, transparent),
+      0 0 20px color-mix(in srgb, var(--rank) 80%, transparent),
+      inset 0 1px 2px rgba(255, 255, 255, .6);
+  }
+}
+
+/* Baseline (every rank, including 4+) tint tied to the app's current accent
+   theme, so switching theme in Settings visibly changes this modal too,
+   instead of it staying a fixed neutral gray. --rank (top-3 only) still
+   overrides this further down/below since those selectors are more specific. */
+.logout-modal-actions .player-detail-close {
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface-raised));
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
+}
+.logout-modal-actions .player-detail-close:hover {
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface-raised));
+}
+
+/* The backdrop and frame's rank tint (#1-3, gold/silver/bronze via --rank)
+   lives further down, right after the html[data-liquid-glass] / html:not(...)
+   theme rules for .logout-modal - those rules use !important at a specificity
+   that would otherwise block a tint declared here, so the real overrides are
+   grouped there instead of split across two places. */
+.player-detail-close.top {
+  color: #201a0a;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--rank) 60%, white), color-mix(in srgb, var(--rank) 40%, rgba(0, 0, 0, .2)));
+  border-color: color-mix(in srgb, var(--rank) 70%, white);
+}
+.player-detail-close.top:hover {
+  background: linear-gradient(145deg, color-mix(in srgb, var(--rank) 75%, white), color-mix(in srgb, var(--rank) 50%, rgba(0, 0, 0, .15)));
+  border-color: color-mix(in srgb, var(--rank) 85%, white);
+}
+
 .player-detail-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -449,6 +548,34 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 .player-detail-stat img { width: 20px; height: 20px; object-fit: contain; }
 .player-detail-stat-value { font-size: 18px; font-weight: 800; color: var(--text-strong); }
 .player-detail-stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* Baseline tile tint (every rank) tied to the current accent theme - see the
+   note above .player-detail-close for why this exists. The stronger
+   .player-detail-modal.top rule below still wins for ranks 1-3. */
+.player-detail-modal .player-detail-stat {
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface-soft));
+  border-color: color-mix(in srgb, var(--accent) 24%, var(--border));
+}
+
+/* Top-3 stat tiles: rank-tinted box + a golden/silver/bronze gradient on the
+   numbers themselves, with a soft glow. Labels stay on-theme (muted) so the
+   numbers are what pop, matching the reference look. */
+.player-detail-modal.top .player-detail-stat {
+  background: color-mix(in srgb, var(--rank) 14%, var(--surface-soft));
+  border-color: color-mix(in srgb, var(--rank) 45%, var(--border));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 0 14px color-mix(in srgb, var(--rank) 20%, transparent);
+}
+.player-detail-modal.top .player-detail-stat-value {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--rank) 92%, white), var(--rank));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: player-detail-stat-glow 2.2s ease-in-out infinite;
+}
+@keyframes player-detail-stat-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px color-mix(in srgb, var(--rank) 60%, transparent)) drop-shadow(0 0 6px color-mix(in srgb, var(--rank) 40%, transparent)); }
+  50% { filter: drop-shadow(0 0 5px color-mix(in srgb, var(--rank) 80%, transparent)) drop-shadow(0 0 12px color-mix(in srgb, var(--rank) 65%, transparent)); }
+}
 
 .player-detail-extra { margin-top: 22px; }
 .player-detail-extra h3 {
@@ -5541,6 +5668,61 @@ html:not([data-liquid-glass]) .logout-modal-backdrop {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+/* Baseline frame tint (every rank) tied to the current accent theme, so the
+   frame always visibly reflects whatever theme is picked in Settings instead
+   of staying a fixed neutral gray. Also bumps opacity a bit over the
+   original .logout-modal values, since at .58/.72 alpha the blurred page
+   behind the modal was bleeding its own colour through and fighting with
+   whatever tint was applied here - this keeps the frame's colour consistent
+   regardless of what's rendered behind it. */
+html[data-liquid-glass] .player-detail-modal {
+  background: color-mix(in srgb, var(--accent) 12%, rgba(35, 35, 40, .86)) !important;
+  border: none !important;
+  box-shadow: inset 0 0 2px 1px color-mix(in srgb, var(--accent) 25%, #ffffff59), inset 0 0 10px 4px color-mix(in srgb, var(--accent) 20%, #ffffff26), inset 0 4px 16px #11111a0d, inset 0 8px 24px #11111a0d, inset 0 6px 56px #11111a0d !important;
+  backdrop-filter: blur(18px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.2) !important;
+}
+html:not([data-liquid-glass]) .player-detail-modal {
+  background: color-mix(in srgb, var(--accent) 12%, rgba(45, 45, 48, .94)) !important;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, rgba(226, 226, 226, .2)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 8px 20px rgba(0, 0, 0, .2) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Rank-tinted frame for the player detail modal (#1-3 only), overriding both
+   the theme rules above and the liquid-glass rules further up. Same
+   specificity pattern (html[...] + two classes beats html[...] + one class)
+   so this wins in both glass states, and every blur/shadow/backdrop-filter
+   value is carried over unchanged - only the colour shifts to
+   gold/silver/bronze via --rank. */
+html[data-liquid-glass] .player-detail-modal.top {
+  background: color-mix(in srgb, var(--rank) 26%, rgba(35, 35, 40, .58)) !important;
+  border: none !important;
+  box-shadow:
+    inset 0 0 2px 1px color-mix(in srgb, var(--rank) 55%, #ffffff59),
+    inset 0 0 10px 4px color-mix(in srgb, var(--rank) 55%, #ffffff26),
+    inset 0 4px 16px #11111a0d, inset 0 8px 24px #11111a0d, inset 0 6px 56px #11111a0d,
+    0 0 40px color-mix(in srgb, var(--rank) 30%, transparent) !important;
+  backdrop-filter: blur(18px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.2) !important;
+}
+html:not([data-liquid-glass]) .player-detail-modal.top {
+  background: color-mix(in srgb, var(--rank) 26%, rgba(52, 52, 55, .72)) !important;
+  border: 1px solid color-mix(in srgb, var(--rank) 60%, rgba(226, 226, 226, .2)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .1),
+    0 8px 20px rgba(0, 0, 0, .2),
+    0 0 40px color-mix(in srgb, var(--rank) 30%, transparent) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-liquid-glass] .player-detail-backdrop.top,
+html:not([data-liquid-glass]) .player-detail-backdrop.top {
+  background: color-mix(in srgb, var(--rank) 20%, rgba(4, 4, 6, 0.72)) !important;
+}
+
 html[data-liquid-glass] .build-confirm-modal .secondary {
   color: var(--text-strong) !important;
   background: rgba(255, 255, 255, .08) !important;

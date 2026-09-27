@@ -1,12 +1,23 @@
+import type { CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { PlayClick } from "../../../Core/Services/SoundEffects";
-import { LeaderStats } from "../../../Core/Configuration/LeaderboardStats";
+import { LeaderStats, RankAccent } from "../../../Core/Configuration/LeaderboardStats";
 import type { LeaderEntry } from "../../../Types/Leaderboard";
 
 interface PlayerDetailModalProps {
   Entry: LeaderEntry;
   Image?: string;
   OnClose: () => void;
+}
+
+// Simple original crown glyph - purely decorative, no external asset.
+function CrownIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M3 8.5l4 2.8L12 4l5 7.3 4-2.8-1.6 9.8H4.6L3 8.5z" />
+      <rect x="4.6" y="18.3" width="14.8" height="2.1" rx="1" />
+    </svg>
+  );
 }
 
 // Fields already shown elsewhere in this modal (avatar/name/level header, or
@@ -33,25 +44,42 @@ function FormatValue(Value: unknown): string {
 export function PlayerDetailModal({ Entry, Image, OnClose }: PlayerDetailModalProps) {
   const ExtraFields = Object.entries(Entry).filter(([Key]) => !KnownKeys.has(Key));
 
+  const HasRank = Boolean(Entry.Rank);
+  const IsTop = HasRank && (Entry.Rank ?? 0) <= 3;
+  const Accent = IsTop ? ({ "--rank": RankAccent[(Entry.Rank ?? 1) - 1] } as CSSProperties) : undefined;
+
   return createPortal(
-    <div className="logout-modal-backdrop" role="presentation" onMouseDown={OnClose}>
+    <div
+      className={`logout-modal-backdrop player-detail-backdrop${IsTop ? " top" : ""}`}
+      style={Accent}
+      role="presentation"
+      onMouseDown={OnClose}
+    >
       <section
-        className="logout-modal player-detail-modal"
+        className={`logout-modal player-detail-modal${IsTop ? " top" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="player-detail-title"
         onMouseDown={(Event) => Event.stopPropagation()}
       >
         <div className="player-detail-header">
-          {Image ? (
-            <img className="player-detail-avatar" src={Image} alt="" />
-          ) : (
-            <div className="player-detail-avatar player-detail-avatar-fallback">{Entry.Username.charAt(0).toUpperCase()}</div>
-          )}
-          <div>
+          <div className={`player-detail-avatar-wrap${IsTop ? " top" : ""}`}>
+            {IsTop && <CrownIcon className="player-detail-crown" />}
+            {Image ? (
+              <img className="player-detail-avatar" src={Image} alt="" />
+            ) : (
+              <div className="player-detail-avatar player-detail-avatar-fallback">{Entry.Username.charAt(0).toUpperCase()}</div>
+            )}
+          </div>
+          <div className="player-detail-title">
             <h2 id="player-detail-title">{Entry.Username}</h2>
             <span className="player-detail-sub">Level {Entry.Level}{Entry.Rank ? ` · Rank #${Entry.Rank}` : ""}</span>
           </div>
+          {HasRank && (
+            <div className={`player-detail-medal${IsTop ? " top" : ""}`} aria-label={`Rank ${Entry.Rank}`}>
+              #{Entry.Rank}
+            </div>
+          )}
         </div>
 
         <div className="player-detail-stats">
@@ -79,7 +107,7 @@ export function PlayerDetailModal({ Entry, Image, OnClose }: PlayerDetailModalPr
         )}
 
         <div className="logout-modal-actions">
-          <button className="secondary" onClick={() => { PlayClick(); OnClose(); }}>Close</button>
+          <button className={`secondary player-detail-close${IsTop ? " top" : ""}`} onClick={() => { PlayClick(); OnClose(); }}>Close</button>
         </div>
       </section>
     </div>,
