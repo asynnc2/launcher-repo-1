@@ -8,7 +8,9 @@ import { CheckLogin } from "../../../Content/API/Authentication/LoginEndpoint";
 import { Frame } from "../../Controls/Shell/Frame";
 import { AmbientBackground } from "../../Controls/Shell/AmbientBackground";
 import { LoginForm } from "./LoginForm";
+import { AccountPicker } from "./AccountPicker";
 import type { LoginScreenProps, MessageTone } from "../../../Types/Authentication";
+import type { RememberedAccount } from "../../../Core/Configuration/AccountSettings";
 
 export type { LoggedInAccount } from "../../../Types/Authentication";
 
@@ -18,11 +20,23 @@ function GenerateGuestUsername(): string {
   return `Guest_${Id}`;
 }
 
-export function LoginPage({ RememberMe, InitialStatus = "", OnLoggedIn }: LoginScreenProps) {
+export function LoginPage({ RememberMe, InitialStatus = "", OnLoggedIn, RememberedAccounts, OnForgetAccount }: LoginScreenProps) {
   const [Remember, SetRemember] = useState(RememberMe);
   const [Submitting, SetSubmitting] = useState(false);
   const [Message, SetMessage] = useState(MessageForStatus(InitialStatus));
   const [Tone, SetTone] = useState<MessageTone>(InitialStatus ? "error" : "info");
+  const [ShowManualForm, SetShowManualForm] = useState(RememberedAccounts.length === 0);
+  const [Prefill, SetPrefill] = useState<{ Email: string; Password: string } | null>(null);
+
+  function ChooseAccount(Account: RememberedAccount) {
+    SetPrefill({ Email: Account.Email, Password: Account.Password });
+    SetShowManualForm(true);
+  }
+
+  function UseAnotherAccount() {
+    SetPrefill(null);
+    SetShowManualForm(true);
+  }
 
   function Fail(Text: string) {
     SetTone("error");
@@ -85,13 +99,37 @@ export function LoginPage({ RememberMe, InitialStatus = "", OnLoggedIn }: LoginS
             <p className="subtitle">Sign in to access your account</p>
           </div>
 
-          <LoginForm
-            Remember={Remember}
-            Submitting={Submitting}
-            OnRememberChange={SetRemember}
-            OnSubmit={(Email, Password) => void Submit(Email, Password)}
-            OnGuestPlay={PlayAsGuest}
-          />
+          {ShowManualForm ? (
+            <>
+              <LoginForm
+                key={Prefill?.Email ?? "manual"}
+                Remember={Remember}
+                Submitting={Submitting}
+                OnRememberChange={SetRemember}
+                OnSubmit={(Email, Password) => void Submit(Email, Password)}
+                OnGuestPlay={PlayAsGuest}
+                InitialEmail={Prefill?.Email}
+                InitialPassword={Prefill?.Password}
+              />
+
+              {RememberedAccounts.length > 0 && (
+                <button
+                  type="button"
+                  className="account-picker-back"
+                  onClick={() => { PlayClick(); SetShowManualForm(false); SetPrefill(null); }}
+                >
+                  &lsaquo; Choose a saved account
+                </button>
+              )}
+            </>
+          ) : (
+            <AccountPicker
+              Accounts={RememberedAccounts}
+              OnChoose={ChooseAccount}
+              OnForget={OnForgetAccount}
+              OnUseAnother={UseAnotherAccount}
+            />
+          )}
 
           {Message && <p className={`form-message ${Tone}`}>{Message}</p>}
 

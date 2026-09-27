@@ -13,6 +13,16 @@ internal static class BridgeMethods
             case "LoadSettings": UserSettings.LoadSettings(); return GlobalSettings.Options;
             case "SaveSettings": UserSettings.ApplySettings(Args["Config"] as JObject ?? new JObject()); return true;
             case "SignOut": UserSettings.SignOut(); return true;
+            case "RememberAccount":
+                UserSettings.RememberAccount(
+                    Args.Value<string>("Email") ?? string.Empty,
+                    Args.Value<string>("Username") ?? string.Empty,
+                    Args.Value<string>("SkinUrl") ?? string.Empty,
+                    Args.Value<string>("Password") ?? string.Empty);
+                return true;
+            case "ForgetAccount":
+                UserSettings.ForgetAccount(Args.Value<string>("Email") ?? string.Empty);
+                return true;
             case "DownloadRequiredFiles": return await GameBridge.DownloadRequiredFiles(Args);
             case "CheckIntegrity": return await GameBridge.CheckIntegrity(Args);
             case "LaunchGame": return await GameBridge.LaunchGame(Args);

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 class AppConfig
 {
     public string Username { get; set; }
@@ -16,8 +18,20 @@ class AppConfig
     public bool AnticheatProtected { get; set; }
     public bool RememberMe { get; set; } = true;
 
+    public List<RememberedAccount> RememberedAccounts { get; set; } = new List<RememberedAccount>();
+
     public AppConfig Clone()
     {
-        return (AppConfig)MemberwiseClone();
+        AppConfig Copy = (AppConfig)MemberwiseClone();
+        Copy.RememberedAccounts = new List<RememberedAccount>(RememberedAccounts);
+        return Copy;
     }
+}
+
+class RememberedAccount
+{
+    public string Email { get; set; }
+    public string Username { get; set; }
+    public string SkinUrl { get; set; }
+    public string Password { get; set; }
 }

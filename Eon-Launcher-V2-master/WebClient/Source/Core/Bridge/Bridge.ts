@@ -35,6 +35,14 @@ export function ShowWindow(): Promise<void> {
   return Invoke("ShowWindow");
 }
 
+export function RememberAccount(Email: string, Username: string, SkinUrl: string, Password: string): Promise<void> {
+  return Invoke("RememberAccount", { Email, Username, SkinUrl, Password });
+}
+
+export function ForgetAccount(Email: string): Promise<void> {
+  return Invoke("ForgetAccount", { Email });
+}
+
 export function BeginDrag(Event: PointerEvent<HTMLElement>): void {
   if (Event.button !== 0 || (Event.target as HTMLElement).closest("button, a, input")) return;
 
@@ -52,4 +60,3 @@ export function BeginDrag(Event: PointerEvent<HTMLElement>): void {
 
   void Invoke("BeginDrag");
 }
-

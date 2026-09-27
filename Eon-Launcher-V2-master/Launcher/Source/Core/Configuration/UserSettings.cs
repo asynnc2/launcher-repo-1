@@ -57,6 +57,45 @@ class UserSettings
         SaveSettings();
     }
 
+    private const int MaxRememberedAccounts = 3;
+
+    public static void RememberAccount(string Email, string Username, string SkinUrl, string Password)
+    {
+        EnsureLoaded();
+
+        if (string.IsNullOrWhiteSpace(Email))
+            return;
+
+        var Accounts = GlobalSettings.Options.RememberedAccounts ?? new System.Collections.Generic.List<RememberedAccount>();
+        Accounts.RemoveAll(Existing => string.Equals(Existing.Email, Email, StringComparison.OrdinalIgnoreCase));
+
+        Accounts.Insert(0, new RememberedAccount
+        {
+            Email = Email,
+            Username = Username,
+            SkinUrl = SkinUrl,
+            Password = Password,
+        });
+
+        while (Accounts.Count > MaxRememberedAccounts)
+            Accounts.RemoveAt(Accounts.Count - 1);
+
+        GlobalSettings.Options.RememberedAccounts = Accounts;
+        SaveSettings();
+    }
+
+    public static void ForgetAccount(string Email)
+    {
+        EnsureLoaded();
+
+        var Accounts = GlobalSettings.Options.RememberedAccounts;
+        if (Accounts == null)
+            return;
+
+        Accounts.RemoveAll(Existing => string.Equals(Existing.Email, Email, StringComparison.OrdinalIgnoreCase));
+        SaveSettings();
+    }
+
     private static bool IsValidJson(string Json)
     {
         if (string.IsNullOrWhiteSpace(Json))

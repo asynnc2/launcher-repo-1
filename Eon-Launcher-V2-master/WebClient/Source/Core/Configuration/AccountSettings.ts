@@ -1,5 +1,12 @@
 import type { ThemeId } from "./Themes";
 
+export interface RememberedAccount {
+  Email: string;
+  Username: string;
+  SkinUrl: string;
+  Password: string;
+}
+
 export interface StoredSettings {
   FortnitePath?: string | null;
   Email?: string;
@@ -14,6 +21,7 @@ export interface StoredSettings {
   RedirectProtected?: boolean;
   Theme?: string;
   RememberMe?: boolean;
+  RememberedAccounts?: RememberedAccount[];
 }
 
 export interface Account {

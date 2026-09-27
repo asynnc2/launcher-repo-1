@@ -10,11 +10,13 @@ interface LoginFormProps {
   OnRememberChange: (Value: boolean) => void;
   OnSubmit: (Email: string, Password: string) => void;
   OnGuestPlay: () => void;
+  InitialEmail?: string;
+  InitialPassword?: string;
 }
 
-export function LoginForm({ Remember, Submitting, OnRememberChange, OnSubmit, OnGuestPlay }: LoginFormProps) {
-  const [Email, SetEmail] = useState("");
-  const [Password, SetPassword] = useState("");
+export function LoginForm({ Remember, Submitting, OnRememberChange, OnSubmit, OnGuestPlay, InitialEmail = "", InitialPassword = "" }: LoginFormProps) {
+  const [Email, SetEmail] = useState(InitialEmail);
+  const [Password, SetPassword] = useState(InitialPassword);
   const [ShowPassword, SetShowPassword] = useState(false);
 
   function Submit(Event: FormEvent) {

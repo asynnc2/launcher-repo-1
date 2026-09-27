@@ -1,3 +1,5 @@
+import type { RememberedAccount } from "../Core/Configuration/AccountSettings";
+
 export interface LoggedInAccount {
   Email: string;
   Password: string;
@@ -11,6 +13,8 @@ export interface LoginScreenProps {
   RememberMe: boolean;
   InitialStatus?: string;
   OnLoggedIn: (Account: LoggedInAccount) => void;
+  RememberedAccounts: RememberedAccount[];
+  OnForgetAccount: (Email: string) => void;
 }
 
 export type MessageTone = "info" | "error" | "success";

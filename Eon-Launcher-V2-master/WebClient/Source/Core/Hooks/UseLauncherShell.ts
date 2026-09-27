@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Invoke } from "../Bridge/Bridge";
+import { Invoke, RememberAccount as RememberAccountBridge, ForgetAccount as ForgetAccountBridge } from "../Bridge/Bridge";
 import { IsTourCompleted, MarkTourCompleted } from "../Services/LauncherStorage";
 import { UseBootSequence } from "./UseBootSequence";
 import { UseLauncherBoot } from "./UseLauncherBoot";
@@ -54,11 +54,23 @@ export function UseLauncherShell() {
       SkinUrl: Logged.SkinUrl,
       RememberMe: Logged.RememberMe,
     });
+
+    // Guests are randomly generated per-session and never worth remembering
+    // for the account picker - only real logins get saved here.
+    if (!Logged.IsGuest) {
+      void RememberAccountBridge(Logged.Email, Logged.Username, Logged.SkinUrl, Logged.Password);
+    }
+
     Launcher.SetSplashMode("welcome");
     Welcome.Begin(() => {
       Boot.SetLoggedIn(true);
       Launcher.SetTourOpen(!Boot.Folder && !IsTourCompleted());
     });
+  }
+
+  function ForgetAccount(Email: string) {
+    void ForgetAccountBridge(Email);
+    Boot.ForgetRememberedAccount(Email);
   }
 
   function SignOut() {
@@ -81,7 +93,7 @@ export function UseLauncherShell() {
 
   return {
     Boot, Actions, History, Auxiliary, Download, Game, Launch, Welcome, Launcher, Trailers, Play, PlayersOnline, IsPlayPage, ShellReady,
-    IsGuest, SignIn, SignOut, CloseTour, RetryBoot,
+    IsGuest, SignIn, SignOut, ForgetAccount, CloseTour, RetryBoot,
   };
 }
 

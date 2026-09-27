@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { TrailerSources } from "../../../Core/Configuration/Assets";
 
 interface HomeTrailersProps {
@@ -8,6 +9,23 @@ interface HomeTrailersProps {
 }
 
 export function HomeTrailers({ Visible, IsPlayPage, Active, OnEnded }: HomeTrailersProps) {
+  const VideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  useEffect(() => {
+    // Only the currently visible trailer is actually decoded/played now -
+    // previously every trailer had autoPlay set and all of them played
+    // simultaneously in the background regardless of which one was shown.
+    VideoRefs.current.forEach((Video, Index) => {
+      if (!Video) return;
+
+      if (IsPlayPage && Index === Active) {
+        if (Video.paused) void Video.play().catch(() => {});
+      } else {
+        Video.pause();
+      }
+    });
+  }, [Active, IsPlayPage]);
+
   if (!Visible) return null;
 
   return (
@@ -15,16 +33,16 @@ export function HomeTrailers({ Visible, IsPlayPage, Active, OnEnded }: HomeTrail
       {TrailerSources.map((Source, Index) => (
         <video
           key={Source}
+          ref={(Element) => { VideoRefs.current[Index] = Element; }}
           id={`home-trailer-${Index}`}
           className={`home-trailer${IsPlayPage ? " is-ready" : ""}${IsPlayPage && Active === Index ? " is-active" : ""}`}
-          autoPlay
           muted
           loop={TrailerSources.length < 2}
           playsInline
           disablePictureInPicture
           disableRemotePlayback
           controlsList="nofullscreen noremoteplayback noplaybackrate nodownload"
-          preload="auto"
+          preload={Index === Active ? "auto" : "none"}
           aria-hidden="true"
           onEnded={() => OnEnded(Index)}
         >

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Invoke } from "../Bridge/Bridge";
-import { AccountFromSettings, EmptyAccount, type Account, type StoredSettings } from "../Configuration/AccountSettings";
+import { AccountFromSettings, EmptyAccount, type Account, type RememberedAccount, type StoredSettings } from "../Configuration/AccountSettings";
 import { DefaultThemeId, IsValidThemeId, type ThemeId } from "../Configuration/Themes";
 import { GetCachedTheme } from "../Services/LauncherStorage";
 import { SetSoundEnabled } from "../Services/SoundEffects";
@@ -22,6 +22,7 @@ export function UseBootSequence(): BootSequence {
   });
   const [Folder, SetFolder] = useState("");
   const [ShouldOfferTour, SetShouldOfferTour] = useState(false);
+  const [RememberedAccounts, SetRememberedAccounts] = useState<RememberedAccount[]>([]);
 
   useEffect(() => {
       SetErrorMessage(undefined);
@@ -36,6 +37,7 @@ export function UseBootSequence(): BootSequence {
           const Loaded = AccountFromSettings(Settings);
           SetFolder(Settings?.FortnitePath ?? "");
           SetAccount(Loaded);
+          SetRememberedAccounts(Settings?.RememberedAccounts ?? []);
           SetSoundEnabled(Loaded.IsSoundEnabled);
           SetTheme(IsValidThemeId(Settings?.Theme) ? Settings.Theme : DefaultThemeId);
 
@@ -80,5 +82,12 @@ export function UseBootSequence(): BootSequence {
     SetAttempt((Value) => Value + 1);
   }
 
-  return { Booted, Stage, Progress, ErrorMessage, LoginNotice, LoggedIn, Account, Theme, Folder, ShouldOfferTour, SetAccount, SetTheme, SetFolder, SetLoggedIn, MarkReady, Retry };
+  function ForgetRememberedAccount(Email: string) {
+    SetRememberedAccounts((Current) => Current.filter((Entry) => Entry.Email.toLowerCase() !== Email.toLowerCase()));
+  }
+
+  return {
+    Booted, Stage, Progress, ErrorMessage, LoginNotice, LoggedIn, Account, Theme, Folder, ShouldOfferTour, RememberedAccounts,
+    SetAccount, SetTheme, SetFolder, SetLoggedIn, MarkReady, Retry, ForgetRememberedAccount,
+  };
 }

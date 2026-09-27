@@ -1,4 +1,4 @@
-import type { Account } from "../Core/Configuration/AccountSettings";
+import type { Account, RememberedAccount } from "../Core/Configuration/AccountSettings";
 import type { ThemeId } from "../Core/Configuration/Themes";
 
 export interface BootSequence {
@@ -12,10 +12,12 @@ export interface BootSequence {
   Theme: ThemeId;
   Folder: string;
   ShouldOfferTour: boolean;
+  RememberedAccounts: RememberedAccount[];
   SetAccount: (Value: Account) => void;
   SetTheme: (Value: ThemeId) => void;
   SetFolder: (Value: string) => void;
   SetLoggedIn: (Value: boolean) => void;
   MarkReady: () => void;
   Retry: () => void;
+  ForgetRememberedAccount: (Email: string) => void;
 }

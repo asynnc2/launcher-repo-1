@@ -54,7 +54,13 @@ export default function MainShellPage() {
       </main>
 
       {Boot.Booted && !Launcher.StartupSplash && !Boot.LoggedIn && (
-        <LoginPage RememberMe={Boot.Account.RememberMe} InitialStatus={Boot.LoginNotice} OnLoggedIn={Shell.SignIn} />
+        <LoginPage
+          RememberMe={Boot.Account.RememberMe}
+          InitialStatus={Boot.LoginNotice}
+          OnLoggedIn={Shell.SignIn}
+          RememberedAccounts={Boot.RememberedAccounts}
+          OnForgetAccount={Shell.ForgetAccount}
+        />
       )}
 
       <ShellSplash
