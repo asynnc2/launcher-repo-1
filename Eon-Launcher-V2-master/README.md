@@ -12,5 +12,5 @@
 
 ---
 
-> [!NOTE]
-> Download the [Compiler](https://cdn.eonfn.dev/Compile%20Launcher.zip) to build the project yourself.
+Original: @EonOGFN
+Remake:@asynnc2
