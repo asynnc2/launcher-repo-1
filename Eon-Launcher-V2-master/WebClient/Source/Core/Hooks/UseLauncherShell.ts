@@ -59,6 +59,12 @@ export function UseLauncherShell() {
     // for the account picker - only real logins get saved here.
     if (!Logged.IsGuest) {
       void RememberAccountBridge(Logged.Email, Logged.Username, Logged.SkinUrl, Logged.Password);
+      Boot.RememberAccountLocally({
+        Email: Logged.Email,
+        Username: Logged.Username,
+        SkinUrl: Logged.SkinUrl,
+        Password: Logged.Password,
+      });
     }
 
     Launcher.SetSplashMode("welcome");

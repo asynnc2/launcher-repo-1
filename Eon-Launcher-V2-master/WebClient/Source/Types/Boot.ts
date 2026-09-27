@@ -20,4 +20,5 @@ export interface BootSequence {
   MarkReady: () => void;
   Retry: () => void;
   ForgetRememberedAccount: (Email: string) => void;
+  RememberAccountLocally: (Entry: RememberedAccount) => void;
 }

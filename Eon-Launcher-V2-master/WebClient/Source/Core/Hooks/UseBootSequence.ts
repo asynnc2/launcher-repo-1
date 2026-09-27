@@ -86,8 +86,21 @@ export function UseBootSequence(): BootSequence {
     SetRememberedAccounts((Current) => Current.filter((Entry) => Entry.Email.toLowerCase() !== Email.toLowerCase()));
   }
 
+  // Bridge.RememberAccount() already persists this to disk (see UserSettings.cs),
+  // but that write doesn't push anything back into this hook's React state - so
+  // without this, a freshly-remembered account only shows up in the picker after
+  // a full app restart (next LoadSettings), not if you sign out again in the same
+  // session. Mirrors the same de-dupe / most-recent-first / max-3 rule as the C#
+  // side so the in-memory list matches what actually ends up on disk.
+  function RememberAccountLocally(Entry: RememberedAccount) {
+    SetRememberedAccounts((Current) => {
+      const Filtered = Current.filter((Existing) => Existing.Email.toLowerCase() !== Entry.Email.toLowerCase());
+      return [Entry, ...Filtered].slice(0, 3);
+    });
+  }
+
   return {
     Booted, Stage, Progress, ErrorMessage, LoginNotice, LoggedIn, Account, Theme, Folder, ShouldOfferTour, RememberedAccounts,
-    SetAccount, SetTheme, SetFolder, SetLoggedIn, MarkReady, Retry, ForgetRememberedAccount,
+    SetAccount, SetTheme, SetFolder, SetLoggedIn, MarkReady, Retry, ForgetRememberedAccount, RememberAccountLocally,
   };
 }

@@ -29,8 +29,7 @@ export function LoginPage({ RememberMe, InitialStatus = "", OnLoggedIn, Remember
   const [Prefill, SetPrefill] = useState<{ Email: string; Password: string } | null>(null);
 
   function ChooseAccount(Account: RememberedAccount) {
-    SetPrefill({ Email: Account.Email, Password: Account.Password });
-    SetShowManualForm(true);
+    void Submit(Account.Email, Account.Password);
   }
 
   function UseAnotherAccount() {
@@ -128,6 +127,7 @@ export function LoginPage({ RememberMe, InitialStatus = "", OnLoggedIn, Remember
               OnChoose={ChooseAccount}
               OnForget={OnForgetAccount}
               OnUseAnother={UseAnotherAccount}
+              Submitting={Submitting}
             />
           )}
 

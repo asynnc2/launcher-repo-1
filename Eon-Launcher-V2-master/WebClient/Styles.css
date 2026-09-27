@@ -432,7 +432,6 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 .player-detail-header h2 { margin: 0; font-size: 20px; }
 .player-detail-sub { color: var(--text-muted); font-size: 13px; }
 
-/* Top-3 avatar ring, keyed off --rank (set inline from RankAccent). */
 .player-detail-avatar-wrap.top .player-detail-avatar,
 .player-detail-avatar-wrap.top .player-detail-avatar-fallback {
   border-color: var(--rank);
@@ -441,7 +440,6 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     0 0 16px color-mix(in srgb, var(--rank) 55%, transparent);
 }
 
-/* Glowing crown for rank #1-3, floating above the avatar. */
 .player-detail-crown {
   position: absolute;
   top: -20px;
@@ -462,15 +460,13 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   }
 }
 
-/* Rank medal, top-right of the header. Every entry with a Rank gets one;
-   rank 1-3 get the glowing accent colour, everything else stays on-theme. */
 .player-detail-medal {
   flex-shrink: 0;
-  align-self: center; /* vertically centered against the row now that it's the taller element */
+  align-self: center;
   min-width: 84px;
   height: 84px;
   padding: 0 14px;
-  margin-right: 22px; /* nudges it left of the edge so it centers over the Hype tile */
+  margin-right: 22px;
   border-radius: 999px;
   display: flex;
   align-items: center;
@@ -502,10 +498,6 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   }
 }
 
-/* Baseline (every rank, including 4+) tint tied to the app's current accent
-   theme, so switching theme in Settings visibly changes this modal too,
-   instead of it staying a fixed neutral gray. --rank (top-3 only) still
-   overrides this further down/below since those selectors are more specific. */
 .logout-modal-actions .player-detail-close {
   background: color-mix(in srgb, var(--accent) 14%, var(--surface-raised));
   border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
@@ -514,11 +506,6 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   background: color-mix(in srgb, var(--accent) 22%, var(--surface-raised));
 }
 
-/* The backdrop and frame's rank tint (#1-3, gold/silver/bronze via --rank)
-   lives further down, right after the html[data-liquid-glass] / html:not(...)
-   theme rules for .logout-modal - those rules use !important at a specificity
-   that would otherwise block a tint declared here, so the real overrides are
-   grouped there instead of split across two places. */
 .player-detail-close.top {
   color: #201a0a;
   background: linear-gradient(145deg, color-mix(in srgb, var(--rank) 60%, white), color-mix(in srgb, var(--rank) 40%, rgba(0, 0, 0, .2)));
@@ -549,17 +536,11 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 .player-detail-stat-value { font-size: 18px; font-weight: 800; color: var(--text-strong); }
 .player-detail-stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
 
-/* Baseline tile tint (every rank) tied to the current accent theme - see the
-   note above .player-detail-close for why this exists. The stronger
-   .player-detail-modal.top rule below still wins for ranks 1-3. */
 .player-detail-modal .player-detail-stat {
   background: color-mix(in srgb, var(--accent) 8%, var(--surface-soft));
   border-color: color-mix(in srgb, var(--accent) 24%, var(--border));
 }
 
-/* Top-3 stat tiles: rank-tinted box + a golden/silver/bronze gradient on the
-   numbers themselves, with a soft glow. Labels stay on-theme (muted) so the
-   numbers are what pop, matching the reference look. */
 .player-detail-modal.top .player-detail-stat {
   background: color-mix(in srgb, var(--rank) 14%, var(--surface-soft));
   border-color: color-mix(in srgb, var(--rank) 45%, var(--border));
@@ -720,7 +701,6 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
     0 5px 14px color-mix(in srgb, var(--danger) 28%, transparent);
 }
-
 
 .login-screen {
   position: fixed;
@@ -1082,6 +1062,13 @@ input:focus {
   text-align: left;
   font-family: inherit;
 }
+.account-picker-choice:disabled,
+.account-picker-remove:disabled,
+.account-picker-other:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
 .account-picker-avatar {
   flex-shrink: 0;
   width: 38px;
@@ -1118,6 +1105,10 @@ input:focus {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.account-picker-email.pending {
+  color: var(--accent);
+  font-weight: 600;
 }
 .account-picker-remove {
   flex-shrink: 0;
@@ -1164,7 +1155,7 @@ input:focus {
   background: none;
   border: 0;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -1232,7 +1223,6 @@ h2 { font-size: 27px; letter-spacing: -.03em; font-weight: 800; }
 .primary:active:not(:disabled) { transform: translateY(0) scale(.98); }
 .primary:disabled { cursor: not-allowed; opacity: .55; filter: none; transform: none; box-shadow: none; }
 .full { margin-top: 8px; }
-
 
 .login-screen .primary {
   color: var(--accent-text);
@@ -1313,7 +1303,6 @@ h2 { font-size: 27px; letter-spacing: -.03em; font-weight: 800; }
   color: #fff;
 }
 
-
 .login-art {
   grid-column: 2;
   position: relative;
@@ -1358,7 +1347,6 @@ h2 { font-size: 27px; letter-spacing: -.03em; font-weight: 800; }
   text-align: right;
   animation: fade-slide-up 550ms var(--ease) both;
 }
-
 
 .splash-screen {
   position: fixed;
@@ -1767,13 +1755,11 @@ h2 { font-size: 27px; letter-spacing: -.03em; font-weight: 800; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
-
 @keyframes card-drop-in {
   0% { opacity: 0; transform: translateY(-34px) scale(.96); }
   60% { opacity: 1; transform: translateY(4px) scale(1.01); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
-
 
 .shop { display: flex; flex-direction: column; gap: 18px; }
 .shop-bar {
@@ -1963,7 +1949,6 @@ h2 { font-size: 27px; letter-spacing: -.03em; font-weight: 800; }
   text-shadow: 0 2px 12px rgba(0, 0, 0, .8), 0 8px 40px rgba(0, 0, 0, .6);
 }
 .art-copy span:last-child { max-width: 460px; color: #d6d8e2; font-size: 15px; line-height: 1.6; text-shadow: 0 2px 10px rgba(0, 0, 0, .85), 0 1px 3px rgba(0, 0, 0, .7); }
-
 
 .leaderboard { display: flex; flex-direction: column; gap: 16px; perspective: 1100px; }
 .lb-filters { display: flex; gap: 10px; justify-content: center; }
@@ -2202,7 +2187,6 @@ img.lb-avatar {
   font-size: 12.5px;
 }
 
-
 .serverstatus { display: flex; flex-direction: column; gap: 16px; }
 .serverstatus .shop-bar { align-items: center; }
 .serverstatus .shop-bar-actions {
@@ -2379,7 +2363,6 @@ img.lb-avatar {
   from { background-position: 100% 50%; }
   to { background-position: 0% 50%; }
 }
-
 
 .app-shell { position: fixed; inset: 0; overflow: hidden; background: var(--surface); isolation: isolate; }
 .ambient-background {
@@ -2878,7 +2861,6 @@ img.lb-avatar {
   border-radius: 20px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
-
 
 .hero-scene {
   position: relative;
@@ -3603,7 +3585,6 @@ img.lb-avatar {
 }
 .launch { width: 210px; }
 
-
 .play-gold-button {
   display: inline-flex;
   align-items: center;
@@ -3649,7 +3630,6 @@ img.lb-avatar {
   transform: none;
   box-shadow: none;
 }
-
 
 .play-gold-button.stop-variant {
   color: #fff;
@@ -4058,7 +4038,6 @@ img.lb-avatar {
 .stat-row strong { font-size: 14px; font-weight: 700; }
 .green { color: var(--green); }
 .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
 
 .page-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
 .section-block, .empty-page {
@@ -5796,13 +5775,6 @@ html:not([data-liquid-glass]) .logout-modal-backdrop {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Baseline frame tint (every rank) tied to the current accent theme, so the
-   frame always visibly reflects whatever theme is picked in Settings instead
-   of staying a fixed neutral gray. Also bumps opacity a bit over the
-   original .logout-modal values, since at .58/.72 alpha the blurred page
-   behind the modal was bleeding its own colour through and fighting with
-   whatever tint was applied here - this keeps the frame's colour consistent
-   regardless of what's rendered behind it. */
 html[data-liquid-glass] .player-detail-modal {
   background: color-mix(in srgb, var(--accent) 12%, rgba(35, 35, 40, .86)) !important;
   border: none !important;
@@ -5818,12 +5790,6 @@ html:not([data-liquid-glass]) .player-detail-modal {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Rank-tinted frame for the player detail modal (#1-3 only), overriding both
-   the theme rules above and the liquid-glass rules further up. Same
-   specificity pattern (html[...] + two classes beats html[...] + one class)
-   so this wins in both glass states, and every blur/shadow/backdrop-filter
-   value is carried over unchanged - only the colour shifts to
-   gold/silver/bronze via --rank. */
 html[data-liquid-glass] .player-detail-modal.top {
   background: color-mix(in srgb, var(--rank) 26%, rgba(35, 35, 40, .58)) !important;
   border: none !important;
@@ -5966,7 +5932,6 @@ html:not([data-liquid-glass]) .frame-player-menu {
 }
 .download-tile:hover .download-tile-action-icon { transform: scale(1.1); }
 .download-tile-art-empty .download-tile-action { position: static; transform: none; }
-
 
 .install-field-label {
   display: block;
